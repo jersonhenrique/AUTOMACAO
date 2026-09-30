@@ -4,6 +4,7 @@ require 'selenium-webdriver'
 require 'faker'
 require 'rspec/expectations'
 
+require File.join(__dir__, '..', 'pages', 'base_page')
 Dir[File.join(__dir__, '..', 'pages', '*.rb')].sort.each { |file| require file }
 
 World(Capybara::DSL)
@@ -14,6 +15,7 @@ Capybara.configure do |config|
   config.default_driver = :selenium_chrome
   config.javascript_driver = :selenium_chrome
   config.run_server = false
+  config.app_host = ENV.fetch('BASE_URL', 'http://automationpractice.com')
 end
 
 Capybara.register_driver :selenium_chrome do |app|
