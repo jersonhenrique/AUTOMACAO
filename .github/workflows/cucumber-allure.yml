@@ -12,6 +12,8 @@ permissions:
 jobs:
   cucumber:
     runs-on: ubuntu-latest
+    outputs:
+      report_generated: ${{ steps.generate-report.outputs.report_generated }}
     env:
       BASE_URL: ${{ vars.BASE_URL || 'http://automationpractice.com' }}
       BROWSER: chrome_headless
@@ -49,11 +51,14 @@ jobs:
         run: bundle exec cucumber -p allure
 
       - name: Generate Allure report
+        id: generate-report
         if: always()
         shell: bash
         run: |
+          echo "report_generated=false" >> "$GITHUB_OUTPUT"
           if [ -d allure-results ] && find allure-results -name '*-result.json' -print -quit | grep -q .; then
             allure generate allure-results --clean -o allure-report
+            echo "report_generated=true" >> "$GITHUB_OUTPUT"
           else
             echo "No Allure test results were generated."
             exit 1
@@ -69,3 +74,24 @@ jobs:
             Cucumber/CADASTRO-CLIENTE/allure-results
           if-no-files-found: warn
           retention-days: 14
+
+      - name: Upload report for GitHub Pages
+        if: always() && steps.generate-report.outputs.report_generated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: Cucumber/CADASTRO-CLIENTE/allure-report
+
+  deploy-pages:
+    needs: cucumber
+    if: always() && needs.cucumber.outputs.report_generated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy Allure report to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

@@ -73,7 +73,9 @@ O Allure monta automaticamente os graficos de resultados a partir dos cenarios e
 
 ## Pipeline GitHub Actions
 
-O workflow `.github/workflows/cucumber-allure.yml` executa os testes em push, pull request ou manualmente. O relatorio Allure e enviado como artefato da execucao, mesmo quando um cenario falha; baixe `allure-report` na pagina da execucao do workflow.
+O workflow `.github/workflows/cucumber-allure.yml` executa os testes em push, pull request ou manualmente. O relatorio Allure e enviado como artefato da execucao, mesmo quando um cenario falha; baixe `allure-report` na pagina da execucao do workflow. Em pushes para `master`, o relatorio tambem e publicado no GitHub Pages, desde que tenha sido gerado.
+
+Na primeira configuracao, habilite GitHub Pages no repositorio em **Settings > Pages > Build and deployment > Source: GitHub Actions**. O link publicado aparece no ambiente `github-pages` da execucao do workflow.
 
 Configure a variavel de repositorio `BASE_URL` nas configuracoes do GitHub Actions para apontar para um ambiente ativo. Sem essa variavel, a pipeline usa a URL padrao documentada acima, que atualmente nao serve a aplicacao de cadastro.
 
