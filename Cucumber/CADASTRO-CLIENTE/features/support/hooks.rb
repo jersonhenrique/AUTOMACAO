@@ -1,14 +1,15 @@
-require "base64"
+require 'fileutils'
 
 Before do
-  @driver = Selenium::WebDriver.for :chrome
-  @driver.manage.window.maximize
-  @driver.manage.timeouts.implicit_wait = 20 
+  FileUtils.mkdir_p('log')
 end
 
-After do
-  shot_file = @driver.save_screenshot("log/screenshot.png")
-  shot_b64 = Base64.encode64(File.open(shot_file, "rb").read)
-  embed(shot_b64, "image/png", "Screenshot") # Cucumber anexa o screenshot no report
-  @driver.quit
+After do |scenario|
+  next unless scenario.failed?
+
+  screenshot_name = "#{scenario.name.gsub(/[^A-Za-z0-9]/, '_').downcase}_#{Time.now.to_i}.png"
+  screenshot_path = File.join('log', screenshot_name)
+
+  page.save_screenshot(screenshot_path)
+  embed(File.binread(screenshot_path), 'image/png', 'Screenshot')
 end

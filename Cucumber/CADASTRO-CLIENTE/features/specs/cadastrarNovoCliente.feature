@@ -1,13 +1,13 @@
 # language: pt
 
-Funcionalidade: Cadastrar Novo Cliente
-Acessar o site Automation Pratice para cadastro de novo cliente
+Funcionalidade: Cadastrar novo cliente
+  Acessar o site Automation Practice e validar o cadastro de um novo cliente com sucesso.
 
- Cenario: Cadastrando um novo cliente
- Dado que acessei a pagina inicial do sistema
- E que acessei o menu 'Singn in'
- Quando na tela Authentication informo os dados de email
- E na tela Authentication clico em Create an Account
- E na tela CREAT AN ACCOUNT informo os dados do novo usuario
- E na tela CREAT AN ACCOUNT clico em Register
- Entao na tela MY ACCOUNT sera exibida mensagem 'Welcome to your account. Here you can manage all of your personal information and orders'
+  Cenário: cadastrando um novo cliente com sucesso
+    Dado que acessei a pagina inicial do sistema
+    E que acessei o menu "Sign in"
+    Quando na tela Authentication informo os dados de email
+    E na tela Authentication clico em "Create an account"
+    E na tela Create an Account informo os dados do novo usuario
+    E na tela Create an Account clico em "Register"
+    Entao na tela My Account sera exibida mensagem "Welcome to your account. Here you can manage all of your personal information and orders"
