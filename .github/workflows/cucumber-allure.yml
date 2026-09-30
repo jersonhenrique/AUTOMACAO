@@ -1,0 +1,71 @@
+name: Cucumber and Allure
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cucumber:
+    runs-on: ubuntu-latest
+    env:
+      BASE_URL: ${{ vars.BASE_URL || 'http://automationpractice.com' }}
+      BROWSER: chrome_headless
+    defaults:
+      run:
+        working-directory: Cucumber/CADASTRO-CLIENTE
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+          working-directory: Cucumber/CADASTRO-CLIENTE
+
+      - name: Install Allure CLI
+        shell: bash
+        run: |
+          curl --fail --silent --show-error --location \
+            https://github.com/allure-framework/allure2/releases/download/2.46.1/allure-2.46.1.zip \
+            --output "$RUNNER_TEMP/allure.zip"
+          unzip -q "$RUNNER_TEMP/allure.zip" -d "$RUNNER_TEMP"
+          chmod +x "$RUNNER_TEMP/allure-2.46.1/bin/allure"
+          echo "$RUNNER_TEMP/allure-2.46.1/bin" >> "$GITHUB_PATH"
+
+      - name: Run Cucumber tests
+        run: bundle exec cucumber -p allure
+
+      - name: Generate Allure report
+        if: always()
+        shell: bash
+        run: |
+          if [ -d allure-results ] && find allure-results -name '*-result.json' -print -quit | grep -q .; then
+            allure generate allure-results --clean -o allure-report
+          else
+            echo "No Allure test results were generated."
+            exit 1
+          fi
+
+      - name: Upload Allure report and raw results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: |
+            Cucumber/CADASTRO-CLIENTE/allure-report
+            Cucumber/CADASTRO-CLIENTE/allure-results
+          if-no-files-found: warn
+          retention-days: 14

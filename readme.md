@@ -10,6 +10,7 @@ Projeto de automacao web para testes de regressao usando Cucumber e o padrao Pag
 - Selenium WebDriver
 - RSpec Expectations
 - Faker
+- Allure Report
 
 ## Estrutura
 
@@ -59,6 +60,22 @@ Gere um relatorio HTML:
 ```powershell
 bundle exec cucumber --format html --out=log/report.html
 ```
+
+Gere resultados e um relatorio Allure com graficos:
+
+```powershell
+bundle exec cucumber -p allure
+allure generate allure-results --clean -o allure-report
+allure open allure-report
+```
+
+O Allure monta automaticamente os graficos de resultados a partir dos cenarios executados. Cada execucao recria `allure-results`; para historico de tendencia entre execucoes, preserve a pasta `history` do relatorio anterior dentro de `allure-results` antes de gerar o proximo relatorio.
+
+## Pipeline GitHub Actions
+
+O workflow `.github/workflows/cucumber-allure.yml` executa os testes em push, pull request ou manualmente. O relatorio Allure e enviado como artefato da execucao, mesmo quando um cenario falha; baixe `allure-report` na pagina da execucao do workflow.
+
+Configure a variavel de repositorio `BASE_URL` nas configuracoes do GitHub Actions para apontar para um ambiente ativo. Sem essa variavel, a pipeline usa a URL padrao documentada acima, que atualmente nao serve a aplicacao de cadastro.
 
 Por padrao, o teste usa Chrome. Selecione outro navegador definindo `BROWSER` antes da execucao:
 

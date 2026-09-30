@@ -5,3 +5,4 @@ chrome: BROWSER=chrome
 firefox: BROWSER=firefox
 chrome_headless: BROWSER=chrome_headless
 firefox_headless: BROWSER=firefox_headless
+allure: --format AllureCucumber::CucumberFormatter --out=allure-results

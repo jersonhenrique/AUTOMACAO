@@ -3,6 +3,7 @@ require 'capybara/cucumber'
 require 'selenium-webdriver'
 require 'faker'
 require 'rspec/expectations'
+require 'allure-cucumber'
 
 require File.join(__dir__, '..', 'pages', 'base_page')
 Dir[File.join(__dir__, '..', 'pages', '*.rb')].sort.each { |file| require file }
