@@ -1,26 +1,91 @@
-Nome do Projeto: TESTEAUTOMATION
+# TESTEAUTOMATION
 
-Descrição: 
+Projeto de automacao web para testes de regressao usando Cucumber e o padrao Page Object.
 
-Projeto de automação de Web para testes regressivos.
-Para escolher o Browser é necessário alterar na linha 4 do arquivo hooks.rb que esta na pasta support
+## Tecnologias
 
-Tecnologias utilizadas:
+- Ruby
+- Cucumber (BDD)
+- Capybara
+- Selenium WebDriver
+- RSpec Expectations
+- Faker
 
-Selenium_Webdriver  - Ruby - Visual Studio Code - Capybara - Cucumber(BDD)- rspec
-Script para execucao no Prompt de comando: cucumber --format html --out=report.html
+## Estrutura
 
-Configuracoes de ambiente:
+A automacao de cadastro de cliente fica em `Cucumber/CADASTRO-CLIENTE`:
 
-Projeto criado em (C:\TESTEAUTOMATION)
-blunder --install
-blundle --install
-Selenium_Webdriver
-Instalar geckodriver .exe no path (C:\Windows): (https://github.com/mozilla/geckodriver/releases) 
-Faker: (https://github.com/faker-ruby/faker)
-Ruby+Devkit 2.5.5-1 (x64): https://rubyinstaller.org/downloads/
-Instalar ChromeDriver .exe no path: https://chromedriver.storage.googleapis.com/index.html?path=76.0.3809.126/
-Visual_Studio_Code: https://code.visualstudio.com/
-Cmeder: https://cmder.net/
+- `features/specs`: cenarios em Gherkin
+- `features/step_definitions`: ligacao dos passos com o fluxo
+- `features/pages`: Page Objects e interacoes com as paginas
+- `features/support`: configuracao do Capybara e hooks do Cucumber
+- `log`: relatorios HTML e screenshots de cenarios com falha
 
-Autor: Jerson Cunha
+## Requisitos
+
+- Ruby x64 3.3 ou compativel
+- Bundler
+- Google Chrome ou Mozilla Firefox
+
+O Selenium Manager gerencia o driver do navegador. Nao e necessario baixar ChromeDriver ou GeckoDriver manualmente.
+
+## Instalacao
+
+No PowerShell, acesse a pasta do projeto e instale as dependencias:
+
+```powershell
+cd C:\Users\<usuario>\Documents\AUTOMACAO\Cucumber\CADASTRO-CLIENTE
+ruby -v
+bundle -v
+bundle install
+```
+
+## Executar os testes
+
+Execute todos os cenarios:
+
+```powershell
+bundle exec cucumber
+```
+
+Execute somente o cadastro de cliente:
+
+```powershell
+bundle exec cucumber features/specs/cadastrarNovoCliente.feature
+```
+
+Gere um relatorio HTML:
+
+```powershell
+bundle exec cucumber --format html --out=log/report.html
+```
+
+Por padrao, o teste usa Chrome. Selecione outro navegador definindo `BROWSER` antes da execucao:
+
+```powershell
+$env:BROWSER = 'firefox'
+bundle exec cucumber
+```
+
+Valores aceitos: `chrome`, `firefox`, `chrome_headless` e `firefox_headless`.
+
+## URL do sistema
+
+A URL-base pode ser substituida pela variavel `BASE_URL`. O padrao atual e `http://automationpractice.com`:
+
+```powershell
+$env:BASE_URL = 'https://<url-do-sistema>'
+bundle exec cucumber
+```
+
+O fluxo navega para `/index.php?` dentro dessa URL-base; a aplicacao configurada precisa expor essa pagina e os elementos esperados pelos Page Objects.
+
+**Status conhecido:** `automationpractice.com` esta retornando uma pagina de hospedagem da InMotion, nao a aplicacao de cadastro. Portanto, o teste end-to-end precisa de uma URL ativa e compativel para passar.
+
+## Evidencias
+
+Em caso de falha, o hook salva um screenshot em `log/` e o anexa ao relatorio do Cucumber.
+
+## Autor
+
+Jerson Cunha
